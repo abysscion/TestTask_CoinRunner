@@ -3,11 +3,18 @@
 public class PlayerController : MonoBehaviour
 {
     public Transform roadTf;
+    [Tooltip("Measures actual coefficient by which swipe length multiplies.")]
+    [Range(0.1f, 5.0f)]
+    public float strokeSensitivity = 2f;
 
     private Transform _tf;
     private Camera _cam;
     private float _roadXOffset; //offset from world center (0,0,0)
     private float _roadWidth;
+    private float _lastMouseViewportPosX;
+    private bool _shouldAdjustPlayerPos;
+
+    private float MouseViewportPointX => Mathf.Clamp(_cam.ScreenToViewportPoint(Input.mousePosition).x, 0f, 1f); //clamped inside viewport because we are supposed to play it not on PC actually
 
     private void Start()
     {
@@ -19,25 +26,54 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(_cam.ScreenToViewportPoint(Input.mousePosition));
+        HandleInput();
         AdjustPlayerPosition();
+    }
+
+    private void HandleInput()
+    {
+        HandleLMB_Down();
+        HandleLMB_Up();
+    }
+
+    private void HandleLMB_Down()
+    {
+        if (!Input.GetMouseButtonDown(0))
+            return;
+
+        _shouldAdjustPlayerPos = true;
+        _lastMouseViewportPosX = MouseViewportPointX;
+    }
+
+    private void HandleLMB_Up()
+    {
+        if (!Input.GetMouseButtonUp(0))
+            return;
+
+        _shouldAdjustPlayerPos = false;
     }
 
     private void AdjustPlayerPosition()
     {
-        if (!Input.GetMouseButton(0))
+        if (!_shouldAdjustPlayerPos)
             return;
-
-        var mViewportPos = _cam.ScreenToViewportPoint(Input.mousePosition);
+        
         var newPos = _tf.position;
+        var swipeLength = (MouseViewportPointX - _lastMouseViewportPosX) * strokeSensitivity;
+        var currentViewportPosX = RoadToViewportPoint(_tf.position.x);
 
-        mViewportPos.x = Mathf.Clamp(mViewportPos.x, 0f, 1f);
-        newPos.x = ViewportToRoadPoint(mViewportPos.x);
+        newPos.x = ViewportToRoadPoint(Mathf.Clamp(currentViewportPosX + swipeLength, 0f, 1f)); //clamped inside viewport because we are supposed to play it not on PC actually
         _tf.position = newPos;
+        _lastMouseViewportPosX = MouseViewportPointX;
     }
 
-    private float ViewportToRoadPoint(float viewPortX)
+    private float ViewportToRoadPoint(float viewportPosX)
     {
-        return _roadWidth * viewPortX + _roadXOffset;
+        return _roadWidth * viewportPosX + _roadXOffset;
+    }
+
+    private float RoadToViewportPoint(float onRoadPosX)
+    {
+        return (_tf.position.x  - _roadXOffset) / _roadWidth;
     }
 }
