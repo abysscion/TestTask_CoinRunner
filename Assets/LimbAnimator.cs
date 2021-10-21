@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
-using UnityEngine.Serialization;
+﻿using UnityEngine;
 
 public class LimbAnimator : MonoBehaviour
 {
@@ -9,11 +7,9 @@ public class LimbAnimator : MonoBehaviour
     public float positiveAngleThreshold = 45f;
     [Range(-180, 0)]
     public float negativeAngleThreshold = -45f;
-    [FormerlySerializedAs("Restoring to default rotation time")]
-    public float restorationTime = 0.25f;
     public bool isStartRotationPositive;
+    public bool participateInIdleAnimation;
 
-    private Coroutine _restoringAnimationCoroutine;
     private Transform _tf;
     private Quaternion _defaultRotation;
     private Vector3 _defaultPosition;
@@ -36,42 +32,41 @@ public class LimbAnimator : MonoBehaviour
 
     private void Update()
     {
-        ResolveRotation();
+        ResolveAnimations();
     }
 
-    public void PlayAnimation()
+    public void PlayRunningAnimation()
     {
         _isRunning = true;
-        if (_restoringAnimationCoroutine != null)
-        {
-            StopCoroutine(_restoringAnimationCoroutine);
-            ResetAnimation();
-        }
+        ResetAnimation();
     }
 
-    public void StopAnimation()
+    public void PlayIdleAnimation()
     {
         _isRunning = false;
-        _restoringAnimationCoroutine = StartCoroutine(AnimateRestoringDefaultRotation());
-        _cumulativeRotationAngle = 0;
-        _isRotationPositive = isStartRotationPositive;
+        ResetAnimation();
     }
 
-    private void ResolveRotation()
+    private void ResolveAnimations()
+    {
+        ResolveRunningAnimation();
+        ResolveIdleAnimation();
+    }
+
+    private void ResolveRunningAnimation()
     {
         if (!_isRunning)
             return;
 
-        if (_cumulativeRotationAngle == positiveAngleThreshold || _cumulativeRotationAngle == negativeAngleThreshold)
-            _isRotationPositive = !_isRotationPositive;
-        
-        var rotationValue = rotationSpeed * Time.deltaTime;
+        _tf.RotateAround(RotationPoint, _tf.right, CalculateRotation());
+    }
 
-        rotationValue = _isRotationPositive ? rotationValue : -rotationValue;
-        _cumulativeRotationAngle += rotationValue;
-        _cumulativeRotationAngle = Mathf.Clamp(_cumulativeRotationAngle, negativeAngleThreshold, positiveAngleThreshold);
+    private void ResolveIdleAnimation()
+    {
+        if (_isRunning || !participateInIdleAnimation)
+            return;
 
-        _tf.RotateAround(RotationPoint, _tf.right, rotationValue);
+        _tf.RotateAround(RotationPoint, _tf.forward, CalculateRotation());
     }
 
     private void ResetAnimation()
@@ -82,43 +77,17 @@ public class LimbAnimator : MonoBehaviour
         _tf.localPosition = _defaultPosition;
     }
 
-    private IEnumerator AnimateRestoringDefaultRotation()
+    private float CalculateRotation()
     {
-        var startTime = Time.unscaledTime;
-        var startRot = _tf.localRotation;
-        var startPos = _tf.localPosition;
-        var currentTime = 0f;
+        if (_cumulativeRotationAngle == positiveAngleThreshold || _cumulativeRotationAngle == negativeAngleThreshold)
+            _isRotationPositive = !_isRotationPositive;
 
-        while ((Time.unscaledTime - startTime) < restorationTime)
-        {
-            currentTime += Time.unscaledDeltaTime;
+        var rotationValue = rotationSpeed * Time.deltaTime;
 
-            var step = currentTime / restorationTime;
-            var thisFrameRotation = new Quaternion()
-            {
-                eulerAngles = new Vector3()
-                {
-                    x = Mathf.LerpAngle(startRot.eulerAngles.x, _defaultRotation.eulerAngles.x, step),
-                    y = Mathf.LerpAngle(startRot.eulerAngles.y, _defaultRotation.eulerAngles.y, step),
-                    z = Mathf.LerpAngle(startRot.eulerAngles.z, _defaultRotation.eulerAngles.z, step)
-                }
-            };
-            var thisFramePosition = new Vector3()
-            {
-                x = Mathf.Lerp(startPos.x, _defaultPosition.x, step),
-                y = Mathf.Lerp(startPos.y, _defaultPosition.y, step),
-                z = Mathf.Lerp(startPos.z, _defaultPosition.z, step),
-            };
+        rotationValue = _isRotationPositive ? rotationValue : -rotationValue;
+        _cumulativeRotationAngle += rotationValue;
+        _cumulativeRotationAngle = Mathf.Clamp(_cumulativeRotationAngle, negativeAngleThreshold, positiveAngleThreshold);
 
-            _tf.localRotation = thisFrameRotation;
-            _tf.localPosition = thisFramePosition;
-
-            yield return null;
-        }
-
-        _tf.localRotation = _defaultRotation;
-        _tf.localPosition = _defaultPosition;
-
-        yield return null;
+        return rotationValue;
     }
 }

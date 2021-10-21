@@ -358,8 +358,8 @@ MonoBehaviour:
   rotationSpeed: 150
   positiveAngleThreshold: 45
   negativeAngleThreshold: -45
-  restorationTime: 0.25
   isStartRotationPositive: 0
+  participateInIdleAnimation: 1
 --- !u!1 &3616675031286007676
 GameObject:
   m_ObjectHideFlags: 0
@@ -567,8 +567,8 @@ MonoBehaviour:
   rotationSpeed: 150
   positiveAngleThreshold: 45
   negativeAngleThreshold: -45
-  restorationTime: 0.25
   isStartRotationPositive: 1
+  participateInIdleAnimation: 0
 --- !u!1 &5375037559595455761
 GameObject:
   m_ObjectHideFlags: 0
@@ -681,8 +681,8 @@ MonoBehaviour:
   rotationSpeed: 150
   positiveAngleThreshold: 45
   negativeAngleThreshold: -45
-  restorationTime: 0.25
   isStartRotationPositive: 1
+  participateInIdleAnimation: 1
 --- !u!1 &8993549327018199557
 GameObject:
   m_ObjectHideFlags: 0
@@ -795,5 +795,5 @@ MonoBehaviour:
   rotationSpeed: 150
   positiveAngleThreshold: 45
   negativeAngleThreshold: -45
-  restorationTime: 0.25
   isStartRotationPositive: 0
+  participateInIdleAnimation: 0

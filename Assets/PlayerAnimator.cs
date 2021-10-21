@@ -33,12 +33,12 @@ public class PlayerAnimator : MonoBehaviour
     private void OnLMBPressed()
     {
         foreach (var animator in _limbAnimators)
-            animator.PlayAnimation();
+            animator.PlayRunningAnimation();
     }
 
     private void OnLMBReleased()
     {
         foreach (var animator in _limbAnimators)
-            animator.StopAnimation();
+            animator.PlayIdleAnimation();
     }
 }
