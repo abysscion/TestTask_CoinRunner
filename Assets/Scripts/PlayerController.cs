@@ -2,6 +2,9 @@
 
 public class PlayerController : MonoBehaviour
 {
+    public System.Action OnLMBPressed;
+    public System.Action OnLMBReleased;
+
     public Transform roadTf;
     [Tooltip("Measures actual coefficient by which swipe length multiplies.")]
     [Range(0.1f, 5.0f)]
@@ -45,6 +48,7 @@ public class PlayerController : MonoBehaviour
 
         _shouldMove = true;
         _lastMouseViewportPosX = MouseViewportPointX;
+        OnLMBPressed?.Invoke();
     }
 
     private void HandleLMB_Up()
@@ -53,6 +57,7 @@ public class PlayerController : MonoBehaviour
             return;
 
         _shouldMove = false;
+        OnLMBReleased?.Invoke();
     }
 
     private void AdjustXPosition()
