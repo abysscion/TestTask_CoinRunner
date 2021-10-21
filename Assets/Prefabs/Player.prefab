@@ -387,7 +387,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95ce81442241ae84e9baac4f0fc6145b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotationSpeed: 150
+  rotationSpeed: 250
   positiveAngleThreshold: 45
   negativeAngleThreshold: -45
   isStartRotationPositive: 0
@@ -567,7 +567,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95ce81442241ae84e9baac4f0fc6145b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotationSpeed: 150
+  rotationSpeed: 250
   positiveAngleThreshold: 45
   negativeAngleThreshold: -45
   isStartRotationPositive: 1
@@ -666,7 +666,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95ce81442241ae84e9baac4f0fc6145b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotationSpeed: 150
+  rotationSpeed: 250
   positiveAngleThreshold: 45
   negativeAngleThreshold: -45
   isStartRotationPositive: 1
@@ -765,7 +765,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95ce81442241ae84e9baac4f0fc6145b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotationSpeed: 150
+  rotationSpeed: 250
   positiveAngleThreshold: 45
   negativeAngleThreshold: -45
   isStartRotationPositive: 0

@@ -22,7 +22,7 @@ public class PlayerController : MonoBehaviour
     private bool _shouldMove;
     private int _coinsCounter;
 
-    private float MouseViewportPointX => Mathf.Clamp(_cam.ScreenToViewportPoint(Input.mousePosition).x, 0f, 1f); //clamped inside viewport because we are supposed to play it not on PC actually
+    private float MouseViewportPointX => Mathf.Clamp(_cam.ScreenToViewportPoint(Input.mousePosition).x, 0.1f, 0.9f); //clamped inside viewport because we are supposed to play it not on PC actually
     public int CoinsCounter => _coinsCounter;
 
     private void Start()
@@ -90,7 +90,7 @@ public class PlayerController : MonoBehaviour
         var swipeLength = (MouseViewportPointX - _lastMouseViewportPosX) * strokeSensitivity;
         var currentViewportPosX = RoadToViewportPoint(_tf.position.x);
 
-        newPos.x = ViewportToRoadPoint(Mathf.Clamp(currentViewportPosX + swipeLength, 0f, 1f)); //clamped inside viewport because we are supposed to play it not on PC actually
+        newPos.x = ViewportToRoadPoint(Mathf.Clamp(currentViewportPosX + swipeLength, 0.1f, 0.9f)); //clamped inside viewport because we are supposed to play it not on PC actually
         _tf.position = newPos;
         _lastMouseViewportPosX = MouseViewportPointX;
     }
