@@ -130,6 +130,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roadTf: {fileID: 0}
   strokeSensitivity: 2
+  moveSpeed: 15
 --- !u!1 &2107575425674466018
 GameObject:
   m_ObjectHideFlags: 0

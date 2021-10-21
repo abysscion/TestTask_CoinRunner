@@ -6,13 +6,14 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Measures actual coefficient by which swipe length multiplies.")]
     [Range(0.1f, 5.0f)]
     public float strokeSensitivity = 2f;
+    public float moveSpeed = 15f;
 
     private Transform _tf;
     private Camera _cam;
     private float _roadXOffset; //offset from world center (0,0,0)
     private float _roadWidth;
     private float _lastMouseViewportPosX;
-    private bool _shouldAdjustPlayerPos;
+    private bool _shouldMove;
 
     private float MouseViewportPointX => Mathf.Clamp(_cam.ScreenToViewportPoint(Input.mousePosition).x, 0f, 1f); //clamped inside viewport because we are supposed to play it not on PC actually
 
@@ -27,7 +28,8 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         HandleInput();
-        AdjustPlayerPosition();
+        AdjustXPosition();
+        MoveForward();
     }
 
     private void HandleInput()
@@ -41,7 +43,7 @@ public class PlayerController : MonoBehaviour
         if (!Input.GetMouseButtonDown(0))
             return;
 
-        _shouldAdjustPlayerPos = true;
+        _shouldMove = true;
         _lastMouseViewportPosX = MouseViewportPointX;
     }
 
@@ -50,12 +52,12 @@ public class PlayerController : MonoBehaviour
         if (!Input.GetMouseButtonUp(0))
             return;
 
-        _shouldAdjustPlayerPos = false;
+        _shouldMove = false;
     }
 
-    private void AdjustPlayerPosition()
+    private void AdjustXPosition()
     {
-        if (!_shouldAdjustPlayerPos)
+        if (!_shouldMove)
             return;
         
         var newPos = _tf.position;
@@ -65,6 +67,14 @@ public class PlayerController : MonoBehaviour
         newPos.x = ViewportToRoadPoint(Mathf.Clamp(currentViewportPosX + swipeLength, 0f, 1f)); //clamped inside viewport because we are supposed to play it not on PC actually
         _tf.position = newPos;
         _lastMouseViewportPosX = MouseViewportPointX;
+    }
+
+    private void MoveForward()
+    {
+        if (!_shouldMove)
+            return;
+
+        _tf.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
     }
 
     private float ViewportToRoadPoint(float viewportPosX)
