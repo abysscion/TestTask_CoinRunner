@@ -5,6 +5,7 @@ public class CoinHelper : MonoBehaviour
     private const string PlayerTag = "Player";
 
     public PlayerController playerController;
+    public GameObject coinPickupParticlePrefab;
 
     private Vector3 _rotationAngles;
 
@@ -19,6 +20,7 @@ public class CoinHelper : MonoBehaviour
         {
             playerController.PickUpCoin();
             Destroy(this.gameObject);
+            Destroy(Instantiate(coinPickupParticlePrefab, this.transform.position, new Quaternion()), 1f);
         }
     }
 

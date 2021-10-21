@@ -108,3 +108,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5829e947ce081c44c859c8e2866dae27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerController: {fileID: 0}
+  coinPickupParticlePrefab: {fileID: 65365509038531912, guid: 980bc8dca487d7546a11eaff953c2804, type: 3}
