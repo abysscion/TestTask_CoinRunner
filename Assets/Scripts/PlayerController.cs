@@ -2,23 +2,28 @@
 
 public class PlayerController : MonoBehaviour
 {
-    public System.Action OnLMBPressed;
-    public System.Action OnLMBReleased;
-
     public Transform roadTf;
     [Tooltip("Measures actual coefficient by which swipe length multiplies.")]
     [Range(0.1f, 5.0f)]
     public float strokeSensitivity = 2f;
     public float moveSpeed = 15f;
 
+    public System.Action<int> OnCoinPickedUp;
+    public System.Action OnFinishReached;
+    public System.Action OnLMBReleased;
+    public System.Action OnLMBPressed;
+
     private Transform _tf;
     private Camera _cam;
+    private float _lastMouseViewportPosX;
     private float _roadXOffset; //offset from world center (0,0,0)
     private float _roadWidth;
-    private float _lastMouseViewportPosX;
+    private bool _inputBlocked;
     private bool _shouldMove;
+    private int _coinsCounter;
 
     private float MouseViewportPointX => Mathf.Clamp(_cam.ScreenToViewportPoint(Input.mousePosition).x, 0f, 1f); //clamped inside viewport because we are supposed to play it not on PC actually
+    public int CoinsCounter => _coinsCounter;
 
     private void Start()
     {
@@ -35,8 +40,24 @@ public class PlayerController : MonoBehaviour
         MoveForward();
     }
 
+    public void PickUpCoin()
+    {
+        _coinsCounter++;
+        OnCoinPickedUp?.Invoke(CoinsCounter);
+    }
+
+    public void ReachFinish()
+    {
+        _inputBlocked = true;
+        _shouldMove = false;
+        OnFinishReached?.Invoke();
+    }
+
     private void HandleInput()
     {
+        if (_inputBlocked)
+            return;
+
         HandleLMB_Down();
         HandleLMB_Up();
     }

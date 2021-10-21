@@ -22,12 +22,14 @@ public class PlayerAnimator : MonoBehaviour
     {
         playerController.OnLMBReleased += OnLMBReleased;
         playerController.OnLMBPressed += OnLMBPressed;
+        playerController.OnFinishReached += OnLMBReleased;
     }
 
     private void Unsubscribe()
     {
         playerController.OnLMBReleased -= OnLMBReleased;
         playerController.OnLMBPressed -= OnLMBPressed;
+        playerController.OnFinishReached -= OnLMBReleased;
     }
 
     private void OnLMBPressed()
